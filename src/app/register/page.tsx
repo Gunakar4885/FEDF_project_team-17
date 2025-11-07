@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +24,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
@@ -39,17 +38,18 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const { error } = await authClient.signUp.email({
-        email: formData.email,
-        name: formData.name,
-        password: formData.password,
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
-
-      if (error?.code) {
-        const errorMap: Record<string, string> = {
-          USER_ALREADY_EXISTS: "Email already registered",
-        };
-        toast.error(errorMap[error.code] || "Registration failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: "Registration failed" }));
+        toast.error(data.error || "Registration failed");
         return;
       }
 
@@ -61,8 +61,6 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
-
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">

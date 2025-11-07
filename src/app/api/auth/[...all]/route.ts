@@ -2,4 +2,12 @@ import { auth } from "@/lib/auth";
 
 import { toNextJsHandler } from "better-auth/next-js";
 
-export const { POST, GET } = toNextJsHandler(auth);
+import { NextResponse } from "next/server";
+
+export function GET() {
+  return NextResponse.json({ error: "Auth route moved" }, { status: 404 });
+}
+
+export function POST() {
+  return NextResponse.json({ error: "Auth route moved" }, { status: 404 });
+}

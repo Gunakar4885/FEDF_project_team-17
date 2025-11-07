@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,21 +32,14 @@ function LoginPageInner() {
         toast.error("Email and password are required");
         return;
       }
-
-      const { data, error } = await authClient.signIn.email({
+      const res = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
-        rememberMe: formData.rememberMe,
-        callbackURL: "/dashboard",
+        redirect: false,
       });
 
-      if (error) {
+      if (!res || res.error) {
         toast.error("Invalid email or password");
-        return;
-      }
-
-      if (!data) {
-        toast.error("Login failed. Please try again.");
         return;
       }
 
