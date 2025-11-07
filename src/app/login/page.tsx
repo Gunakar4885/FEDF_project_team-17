@@ -28,15 +28,25 @@ function LoginPageInner() {
     setIsLoading(true);
 
     try {
+      if (!formData.email || !formData.password) {
+        toast.error("Email and password are required");
+        return;
+      }
+
       const { data, error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
         rememberMe: formData.rememberMe,
-        callbackURL: "/dashboard"
+        callbackURL: "/dashboard",
       });
 
-      if (error?.code) {
-        toast.error("Invalid email or password. Please make sure you have already registered an account and try again.");
+      if (error) {
+        toast.error("Invalid email or password");
+        return;
+      }
+
+      if (!data) {
+        toast.error("Login failed. Please try again.");
         return;
       }
 

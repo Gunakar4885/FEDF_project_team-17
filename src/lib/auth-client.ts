@@ -9,13 +9,12 @@ export const authClient = createAuthClient({
         Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem("bearer_token") : ""}`,
       },
       onSuccess: (ctx) => {
-          const authToken = ctx.response.headers.get("set-auth-token")
-          // Store the token securely (e.g., in localStorage)
-          if(authToken){
-            // Split token at "." and take only the first part
-            const tokenPart = authToken.includes('.') ? authToken.split('.')[0] : authToken;
-            localStorage.setItem("bearer_token", tokenPart);
-          }
+        const authToken = ctx.response.headers.get("set-auth-token")
+        // Store the token securely (e.g., in localStorage)
+        if (authToken) {
+          // Store the full token; do not truncate
+          localStorage.setItem("bearer_token", authToken);
+        }
       }
   }
 });
@@ -26,8 +25,10 @@ export function useSession(): SessionData {
    const [session, setSession] = useState<any>(null);
    const [isPending, setIsPending] = useState(true);
    const [error, setError] = useState<any>(null);
+   const [isRefetching, setIsRefetching] = useState(false);
 
    const refetch = () => {
+      setIsRefetching(true);
       setIsPending(true);
       setError(null);
       fetchSession();
@@ -50,6 +51,7 @@ export function useSession(): SessionData {
          setError(err);
       } finally {
          setIsPending(false);
+         setIsRefetching(false);
       }
    };
 
@@ -57,5 +59,5 @@ export function useSession(): SessionData {
       fetchSession();
    }, []);
 
-   return { data: session, isPending, error, refetch };
+   return { data: session, isPending, isRefetching, error, refetch };
 }

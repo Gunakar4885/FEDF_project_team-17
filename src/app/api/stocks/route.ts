@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
-// Cache for stock data
+
 let stockCache: any = null;
 let stockCacheTime = 0;
-const CACHE_DURATION = 30000; // 30 seconds
+const CACHE_DURATION = 30000; 
 
 
 const generateIndianStocks = () => {
@@ -71,7 +71,7 @@ const generateIndianStocks = () => {
   const allStocks = [...indianStocks, ...additionalStocks];
 
   return allStocks.map((stock, index) => {
-    const changePercent = (Math.random() - 0.5) * 10; // -5% to +5%
+    const changePercent = (Math.random() - 0.5) * 10; 
     const currentPrice = stock.basePrice * (1 + changePercent / 100);
     const volume = Math.floor(Math.random() * 10000000) + 100000;
     const marketCap = currentPrice * (Math.random() * 100000000 + 10000000);
@@ -102,10 +102,10 @@ export async function GET() {
       return NextResponse.json(stockCache);
     }
 
-    // Generate fresh stock data
+    
     const stockData = generateIndianStocks();
 
-    // Update cache
+   
     stockCache = stockData;
     stockCacheTime = now;
 

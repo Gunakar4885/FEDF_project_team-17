@@ -2,25 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-// Cache news for 5 minutes
 let newsCache: { data: any[], timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 5 * 60 * 1000; /
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const type = searchParams.get('type') || 'all'; // 'crypto', 'stock', or 'all'
+    const type = searchParams.get('type') || 'all'; 
     
-    // Check cache
+    
     if (newsCache && Date.now() - newsCache.timestamp < CACHE_DURATION) {
       const filteredNews = filterNewsByType(newsCache.data, type);
       return NextResponse.json(filteredNews);
     }
 
-    // Fetch from multiple sources
     const newsArticles: any[] = [];
 
-    // Fetch crypto news from CoinGecko
     try {
       const cryptoNewsRes = await fetch('https://api.coingecko.com/api/v3/news', {
         headers: {
@@ -48,7 +45,6 @@ export async function GET(request: NextRequest) {
       console.error('Error fetching crypto news:', error);
     }
 
-    // Add some stock market news (using a general approach since Alpha Vantage requires API key)
     const stockNews = [
       {
         id: 'stock-1',
@@ -84,12 +80,10 @@ export async function GET(request: NextRequest) {
 
     newsArticles.push(...stockNews);
 
-    // Sort by published date
     newsArticles.sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
 
-    // Update cache
     newsCache = {
       data: newsArticles,
       timestamp: Date.now()

@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 
-// Cache for crypto data
+
 let cryptoCache: any = null;
 let cryptoCacheTime = 0;
-const CACHE_DURATION = 30000; // 30 seconds
+const CACHE_DURATION = 30000; 
 
 export async function GET() {
   try {
-    // Check cache
+   
     const now = Date.now();
     if (cryptoCache && (now - cryptoCacheTime) < CACHE_DURATION) {
       return NextResponse.json(cryptoCache);
     }
 
-    // Fetch top 100 cryptocurrencies in INR from CoinGecko
+    
     const response = await fetch(
       'https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d',
       {
@@ -49,7 +49,7 @@ export async function GET() {
       atl: coin.atl,
     }));
 
-    // Update cache
+    
     cryptoCache = formattedData;
     cryptoCacheTime = now;
 
