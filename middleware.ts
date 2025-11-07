@@ -4,6 +4,12 @@ import { auth } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("redirect", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+  return NextResponse.next();
 }
 
 export const config = {
