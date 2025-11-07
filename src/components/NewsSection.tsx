@@ -116,7 +116,9 @@ export const NewsSection = () => {
             ) : (
               <div
                 className="space-y-3 max-h-[600px] overflow-y-auto overscroll-contain pr-2"
+                onWheel={(e) => { e.preventDefault(); e.stopPropagation(); }}
                 onWheelCapture={(e) => e.stopPropagation()}
+                onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}
                 onTouchMoveCapture={(e) => e.stopPropagation()}
               >
                 {news.map((article) => (
