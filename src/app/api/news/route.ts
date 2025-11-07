@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 let newsCache: { data: any[], timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; /
+const CACHE_DURATION = 5 * 60 * 1000;
 
 export async function GET(request: NextRequest) {
   try {
