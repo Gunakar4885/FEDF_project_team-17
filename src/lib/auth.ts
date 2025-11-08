@@ -1,18 +1,19 @@
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { bearer } from "better-auth/plugins";
 import { NextRequest } from 'next/server';
-import { headers } from "next/headers"
-import { db } from "@/db";
+import { headers } from "next/headers";
+import { getDb, getMongoClient } from "@/lib/mongo";
 
+// Initialize Better Auth with MongoDB adapter
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "mysql",
+  database: mongodbAdapter(await getDb(), {
+    client: await getMongoClient(),
   }),
-  emailAndPassword: {    
-    enabled: true
+  emailAndPassword: {
+    enabled: true,
   },
-  plugins: [bearer()]
+  plugins: [bearer()],
 });
 
 // Session validation helper
