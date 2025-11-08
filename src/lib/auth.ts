@@ -1,14 +1,14 @@
 import { betterAuth } from "better-auth";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer } from "better-auth/plugins";
 import { NextRequest } from 'next/server';
 import { headers } from "next/headers";
-import { getDb, getMongoClient } from "@/lib/mongo";
+import { db } from "@/db";
 
-// Initialize Better Auth with MongoDB adapter
+// Initialize Better Auth with Drizzle adapter (SQLite/Turso)
 export const auth = betterAuth({
-  database: mongodbAdapter(await getDb(), {
-    client: await getMongoClient(),
+  database: drizzleAdapter(db, {
+    provider: "sqlite",
   }),
   emailAndPassword: {
     enabled: true,

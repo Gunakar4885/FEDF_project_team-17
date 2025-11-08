@@ -1,9 +1,12 @@
-import mysql from 'mysql2/promise';
-import { drizzle } from 'drizzle-orm/mysql2';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from '@/db/schema';
 
-const pool = mysql.createPool(process.env.MYSQL_URL!);
+const client = createClient({
+  url: process.env.TURSO_CONNECTION_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-export const db = drizzle(pool, { schema, mode: 'default' });
+export const db = drizzle(client, { schema });
 
 export type Database = typeof db;
